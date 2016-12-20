@@ -10,13 +10,13 @@ import Foundation
 
 class FileOperate{
     var m_fileName = ""
-    let m_localPath = NSHomeDirectory() + "/Library/YoPass/"
+    let m_localPath = CommonSetting.m_workPath
     init(fileName: String,isLocal:Bool = true)
     {
         if isLocal == true {
            // self.m_fileName = Bundle.main.bundlePath + "/" + fileName
             
-            self.m_fileName = m_localPath + fileName
+            self.m_fileName = m_localPath + "/" + fileName
             
         }
         else

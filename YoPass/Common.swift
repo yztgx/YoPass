@@ -72,7 +72,7 @@ class CommonSetting
     static var m_passMD5 = ""
     static var m_passMD5_16 = ""
     static let m_filePass = "storage.dat"
-    static let m_workPath = NSHomeDirectory() + "/Library/YoPass"
+    static let m_workPath = NSHomeDirectory() + "/Library/TestPass"
 }
 
 class Crypto

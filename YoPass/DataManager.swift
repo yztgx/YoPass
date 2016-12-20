@@ -241,7 +241,7 @@ class DataManager: NSObject
     
     func AddPass(passValue: PassInfo)
     {
-        var maxID = 0
+        var maxID = 1
         var passValue_new = passValue
         for passValue_index in m_passList_ALL{
             if passValue_index.ID > maxID{
