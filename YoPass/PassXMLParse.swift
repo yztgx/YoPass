@@ -166,6 +166,7 @@ class PassXMLParse: NSObject,XMLParserDelegate
                 case "Mail":m_passValue.Mail = strValue
                 case "Serial": m_passValue.Serial = strValue
                 case "Image" :m_passValue.Image = strValue
+                case "Mark" :m_passValue.Mark = strValue
             default:break
             }
         }
@@ -282,6 +283,7 @@ class XMLCombine
         var passItemTel :XMLElement
         var passItemMail: XMLElement
         var passItemImage: XMLElement
+         var passItemMark: XMLElement
         
         for passValue in passList
         {
@@ -293,6 +295,7 @@ class XMLCombine
             passItemTel = XMLElement(name: "Tel", stringValue: passValue.Tel)
             passItemMail = XMLElement(name: "Mail", stringValue: passValue.Mail)
             passItemImage = XMLElement(name: "Image", stringValue: passValue.Image)
+            passItemMark = XMLElement(name: "Mark", stringValue: passValue.Mark)
             nodepass.addChild(passItemName)
             nodepass.addChild(passItemURL)
             nodepass.addChild(passItemUserName)
@@ -300,6 +303,7 @@ class XMLCombine
             nodepass.addChild(passItemTel)
             nodepass.addChild(passItemMail)
             nodepass.addChild(passItemImage)
+            nodepass.addChild(passItemMark)
             
             attr["ID"] = String(passValue.ID)
             attr["CategoryID"]  = String(passValue.CategoryID)

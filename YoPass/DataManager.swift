@@ -24,6 +24,7 @@ struct PassInfo{
     var Mail: String = ""
     var Serial: String = ""
     var Image: String = ""
+    var Mark: String = ""
 }
 
 struct CategoryInfo{
@@ -238,19 +239,22 @@ class DataManager: NSObject
         return false
     }
     
-    
-    func AddPass(passValue: PassInfo)
+    func AssignNewPassID()->Int
     {
         var maxID = 1
-        var passValue_new = passValue
+       
         for passValue_index in m_passList_ALL{
             if passValue_index.ID > maxID{
-               maxID = passValue_index.ID
+                maxID = passValue_index.ID
             }
             maxID = maxID + 1
         }
-        passValue_new.ID = maxID
-        m_passList_ALL.append(passValue_new)
+        return maxID
+    }
+    
+    func AddPass(passValue: PassInfo)
+    {
+        m_passList_ALL.append(passValue)
         SavePassFile()
         
     }

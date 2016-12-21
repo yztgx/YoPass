@@ -30,6 +30,8 @@ class WebPassInfoViewController: NSViewController,NSTextFieldDelegate {
     
     @IBOutlet weak var favorityCheckButton: NSButton!
     
+    @IBOutlet var markText: NSTextView!
+    
     var m_passValue = PassInfo()
     
     var m_ImageList = [String]()
@@ -77,6 +79,7 @@ class WebPassInfoViewController: NSViewController,NSTextFieldDelegate {
             passText.stringValue = m_passValue.Password
             mailText.stringValue = m_passValue.Mail
             telText.stringValue = m_passValue.Tel
+            markText.string = m_passValue.Mark
             importCheckButton.state = m_passValue.Important ? NSOnState:NSOffState
             favorityCheckButton.state = m_passValue.Favorite ? NSOnState:NSOffState
             
@@ -121,14 +124,14 @@ class WebPassInfoViewController: NSViewController,NSTextFieldDelegate {
         }else if retCode == NSAlertSecondButtonReturn{
             print("OK")
         }
-        
+
         m_passValue.Name = nameText.stringValue
         m_passValue.URL = urlText.stringValue
         m_passValue.Username = userText.stringValue
         m_passValue.Password = passText.stringValue
         m_passValue.Mail = mailText.stringValue
         m_passValue.Tel = telText.stringValue
-        
+        m_passValue.Mark = markText.string!
         if importCheckButton.state == NSOnState
         {
             m_passValue.Important = true

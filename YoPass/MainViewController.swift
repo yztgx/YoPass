@@ -253,6 +253,7 @@ class MainViewController: NSViewController,NSWindowDelegate {
             if (exitCode == 1)
             {
                 passValue = passViewController.m_passValue
+                passValue.ID = m_dataManager.AssignNewPassID()
                 let cateIndex = tableView_Category.selectedRow
                 if (cateIndex >= 0 )
                 {
