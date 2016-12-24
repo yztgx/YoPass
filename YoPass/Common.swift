@@ -73,8 +73,84 @@ class CommonSetting
     static var m_passMD5_16 = ""
     static let m_filePass = "storage.dat"
     static let m_workPath = NSHomeDirectory() + "/Library/TestPass"
+    static let m_softVer = 1.1
+    static var m_dbVer = 0.1
 }
+class CommonFunc
+{
+    //计算规则：1-5分，1极不安全，5最安全
+    //默认1分、包含数字+1分，包含字母+1分，长度超过6 +1,包含特殊符号+1
+    //每个字符之间相减值相同者减1分
+    
+    static func CheckPassSafe(password: String)->Int
+    {
+        var numpassList = [UInt32]()
+        var numReduceList = [Int]()
+        var numCount = 0
+        var numNum = 0
+        var numCharUpper = 0
+        var numCharLoser = 0
+        var numSpecial = 0
+        var numReduceCompare = -1
+        for ch in password.unicodeScalars
+        {
+            numpassList.append(UnicodeScalar(ch).value)
+            
+        }
+        
+        if numpassList.count >= 6
+        {
+            numCount = 1
+        }
+        else
+        {
+            return 1
+        }
+        
+        var oldnum: UInt32 = 0
+        var reduce: Int = 0
+        for num in numpassList
+        {
+            if (num >=  UnicodeScalar("0")!.value && num <=  UnicodeScalar("9")!.value)
+            {
+                numNum =  1
+            }else if (num >=  UnicodeScalar("a")!.value && num <=  UnicodeScalar("z")!.value)
+            {
+                numCharLoser = 1
+                
+            }else if (num >=  UnicodeScalar("A")!.value && num <=  UnicodeScalar("Z")!.value)
+            {
+                numCharUpper = 1
+            }
+            else{
+                numSpecial = 1
+            }
+            if oldnum != 0
+            {
+                reduce = Int(num) - Int(oldnum)
+                numReduceList.append(reduce)
+            }
+            oldnum = num
+        }
+        
+        if numReduceList.count > 2
+        {
+            let numReduceTmp = numReduceList[0]
+            for numReduceIndex in numReduceList
+            {
+                if numReduceTmp != numReduceIndex
+                {
+                    numReduceCompare = 0
+                    break
+                }
+            }
+        }
+        
+        
+        return numCount+numNum+numCharUpper+numCharLoser+numSpecial+numReduceCompare
+    }
 
+}
 class Crypto
 {
     static func EnCryptoAES256(str: String,key: String,iv: String) -> String?

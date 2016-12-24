@@ -64,6 +64,8 @@ let CATEGORY_ALL        = 0
 let CATEGORY_FAVORITE   = 1
 let CATEGORY_WEB        = 10
 let CATEGORY_SOFTWARE   = 11
+let CATEGORY_BANK       = 12
+let CATEGORY_MARK       = 13
 
 
 
@@ -123,6 +125,7 @@ class DataManager: NSObject
         //file.DeleteFile()       //swift copy函数无法覆盖，只能先删除
         //file.CopyFile()   
     
+        
         let data = file.ReadFile()
        
         let passXML = PassXMLParse()
@@ -130,9 +133,33 @@ class DataManager: NSObject
         
         m_categoryList = passXML.m_categoryList
         m_passList_ALL = passXML.m_passList
-
+        
+        super.init()
+        UpdateCategory(ver: passXML.m_dbVer)
+       
      }
-    
+    func UpdateCategory(ver: Double)
+    {
+        //将来改成数组
+        let category1_1 = CategoryInfo(id: CATEGORY_MARK, name: "Mark", isdefault: true, image: "cate_5")
+        var existCategory = false
+        if (ver<CommonSetting.m_softVer)
+        {
+            for categoryValue in m_categoryList
+            {
+                if categoryValue.ID == category1_1.ID{
+                    existCategory = true
+                }
+            }
+            if (existCategory == true)
+            {
+                m_categoryList.append(category1_1)
+            }
+
+            
+        }
+        
+    }
     func GetAllCategory()->[CategoryInfo]
     {
  

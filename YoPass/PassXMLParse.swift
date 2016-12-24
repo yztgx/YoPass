@@ -23,6 +23,7 @@ class PassXMLParse: NSObject,XMLParserDelegate
     var m_categoryValue = CategoryInfo()
     
     var m_currentNodeName: String = ""
+    var m_dbVer = 1.0
     
     func StartParse(data: Data)
     {
@@ -167,6 +168,9 @@ class PassXMLParse: NSObject,XMLParserDelegate
                 case "Serial": m_passValue.Serial = strValue
                 case "Image" :m_passValue.Image = strValue
                 case "Mark" :m_passValue.Mark = strValue
+                case "Ver" :
+                    m_dbVer = Double(strValue)!
+                    print("DBVer = \(m_dbVer)")
             default:break
             }
         }
@@ -211,7 +215,7 @@ class XMLCombine
     private func SetDataBaseInfo()->XMLElement
     {
         let dataBaseInfo = ["Software":"YoPass",
-                            "Ver":"1.0",
+                            "Ver":String(CommonSetting.m_softVer),
                             "User":" ",
                             "Date":" "]
         let nodeBase = XMLElement(name: "DataBaseInfo")

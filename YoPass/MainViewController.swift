@@ -233,43 +233,100 @@ class MainViewController: NSViewController,NSWindowDelegate {
         
     }
     
-    @IBAction func AddNewPass(_ sender: AnyObject)
+    func showPassInfoDialog(passCategoryID: Int,bModify: Bool,orginpassValue:PassInfo = PassInfo())->(Int,PassInfo)
     {
-        
-
-        
-        
-        let mainStoryboard: NSStoryboard = NSStoryboard(name: "Pass", bundle: nil)
-        let passWindowController = mainStoryboard.instantiateController(withIdentifier: "WebPass") as! NSWindowController
-        
-        if let passWindow = passWindowController.window{
+        var passInfoIdentifier: String = ""
+        var passValue = PassInfo()
+        var retCode = 0
+        switch passCategoryID {
+        case CATEGORY_WEB:
+            passInfoIdentifier = "WebPass"
+        case CATEGORY_MARK:
+            passInfoIdentifier = "MarkPass"
+        default:
+            passInfoIdentifier = ""
+        }
+        if (!passInfoIdentifier.isEmpty)
+        {
+            let mainStoryboard: NSStoryboard = NSStoryboard(name: "Pass", bundle: nil)
+            let passWindowController = mainStoryboard.instantiateController(withIdentifier: "PassInfo") as! NSWindowController
             
-            var passValue: PassInfo
-            let passViewController = passWindowController.contentViewController as! WebPassInfoViewController
-            
-            let application = NSApplication.shared()
-            let exitCode = application.runModal(for: passWindow)
-            
-            if (exitCode == 1)
-            {
-                passValue = passViewController.m_passValue
-                passValue.ID = m_dataManager.AssignNewPassID()
-                let cateIndex = tableView_Category.selectedRow
-                if (cateIndex >= 0 )
+            let passViewController = mainStoryboard.instantiateController(withIdentifier: passInfoIdentifier) as! PassInfoViewController
+            if let passWindow = passWindowController.window{
+                
+                
+                
+                passWindow.contentView?.addSubview(passViewController.view)
+                passWindow.contentViewController?.insertChildViewController(passViewController, at: 0)
+                passWindow.contentView?.frame = passViewController.view.frame
+                
+                passWindow.setFrame(passViewController.view.frame, display: true)
+                
+                if (bModify == true)
                 {
-                    if (m_categoryList[cateIndex].ID == passValue.CategoryID
-                        || m_categoryList[cateIndex].ID == CATEGORY_ALL
-                        || (m_categoryList[cateIndex].ID == CATEGORY_FAVORITE && passValue.Favorite == true))
-                    {
-                        m_passList.append(passValue)
-                    }
+                    passViewController.m_passValue = orginpassValue
                 }
-               
-                let _ = m_dataManager.AddPass(passValue:  passValue)
-                tableView_Pass.reloadData()
+                
+                let application = NSApplication.shared()
+                retCode = application.runModal(for: passWindow)
+                if (retCode == 1)
+                {
+                    passValue = passViewController.m_passValue
+                }
+                
             }
         }
+        return(retCode,passValue)
     }
+    
+    
+    @IBAction func AddWebPass(_ sender: AnyObject)
+    {
+
+        var (retCode,passValue) = showPassInfoDialog(passCategoryID:CATEGORY_WEB,bModify:false)
+        if (retCode == 1)
+        {
+            passValue.ID = m_dataManager.AssignNewPassID()
+            let cateIndex = tableView_Category.selectedRow
+            if (cateIndex >= 0 )
+            {
+                if (m_categoryList[cateIndex].ID == passValue.CategoryID
+                    || m_categoryList[cateIndex].ID == CATEGORY_ALL
+                    || (m_categoryList[cateIndex].ID == CATEGORY_FAVORITE && passValue.Favorite == true))
+                {
+                    m_passList.append(passValue)
+                }
+            }
+           
+            let _ = m_dataManager.AddPass(passValue:  passValue)
+            tableView_Pass.reloadData()
+        }
+    }
+    
+    
+    @IBAction func AddMarkPass(_ sender: AnyObject)
+    {
+        
+        var (retCode,passValue) = showPassInfoDialog(passCategoryID:CATEGORY_MARK,bModify:false)
+        if (retCode == 1)
+        {
+            passValue.ID = m_dataManager.AssignNewPassID()
+            let cateIndex = tableView_Category.selectedRow
+            if (cateIndex >= 0 )
+            {
+                if (m_categoryList[cateIndex].ID == passValue.CategoryID
+                    || m_categoryList[cateIndex].ID == CATEGORY_ALL
+                    || (m_categoryList[cateIndex].ID == CATEGORY_FAVORITE && passValue.Favorite == true))
+                {
+                    m_passList.append(passValue)
+                }
+            }
+            
+            let _ = m_dataManager.AddPass(passValue:  passValue)
+            tableView_Pass.reloadData()
+        }
+    }
+
     
 
 
@@ -294,32 +351,16 @@ class MainViewController: NSViewController,NSWindowDelegate {
             return
         }
         
-        var passValue = m_passList[tableView_Pass.selectedRow]
+        let orginpassValue = m_passList[tableView_Pass.selectedRow]
 
-        let mainStoryboard: NSStoryboard = NSStoryboard(name: "Pass", bundle: nil)
-        let passWindowController = mainStoryboard.instantiateController(withIdentifier: "WebPass") as! NSWindowController
-        
-        if let passWindow = passWindowController.window{
-            
-            
-            let passViewController = passWindowController.contentViewController as! WebPassInfoViewController
-            passViewController.m_passValue = passValue
-            
-            let application = NSApplication.shared()
-            let exitCode = application.runModal(for: passWindow)
-            
-            if (exitCode == 1)
-            {
-                passValue = passViewController.m_passValue
-
-                m_passList[tableView_Pass.selectedRow] =  passValue
-                let _ = m_dataManager.ModifyPass(passValue: passValue)
-                tableView_Pass.reloadData()
-            }
+   
+        let (retCode,passValue) = showPassInfoDialog(passCategoryID:orginpassValue.CategoryID,bModify:true,orginpassValue: orginpassValue)
+        if (retCode == 1)
+        {
+            m_passList[tableView_Pass.selectedRow] =  passValue
+            let _ = m_dataManager.ModifyPass(passValue: passValue)
+            tableView_Pass.reloadData()
         }
-        
-        
-        
     }
     
     
@@ -444,5 +485,9 @@ extension MainViewController: NSTableViewDelegate
     
     
 }
+
+
+
+
 
 
